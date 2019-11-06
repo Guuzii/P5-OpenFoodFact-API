@@ -185,17 +185,21 @@ def main():
       print("-------------------------------------------------------------------------------------")
       print("Voici la liste de vos produits favoris :")
 
-      for product in favorites_products:
-        product_categories = mydb.get_categories_for_product(product[0])
-        product_stores = mydb.get_stores_for_product(product[0])
+      if favorites_products is not None:
+        for product in favorites_products:
+          product_categories = mydb.get_categories_for_product(product[0])
+          product_stores = mydb.get_stores_for_product(product[0])
 
+          print("")
+          print("Id :", product[0])
+          print("Nom :", product[1])
+          print("Url :", product[2])
+          print("NutriScore :", product[3])
+          print("Categorie(s) :", product_categories)
+          print("Magasin(s) :", product_stores)
+      else:
         print("")
-        print("Id :", product[0])
-        print("Nom :", product[1])
-        print("Url :", product[2])
-        print("NutriScore :", product[3])
-        print("Categorie(s) :", product_categories)
-        print("Magasin(s) :", product_stores)
+        print("Vous n'avez pas encore de produits enregistré dans vos favoris")
 
 # ----- CHOIX 4 -------------------------------------------------------------------------------------------------------------------
     elif user_selection == "4":
