@@ -1,3 +1,5 @@
+import random
+
 import config
 import mysql.connector as mysql
 
@@ -9,7 +11,7 @@ class Database:
             host=host,
             user=user,
             passwd=passwd,
-            database=config.database_name
+            database=config.db_config["db_name"]
         )
         self.cursor = self.database.cursor()
 
@@ -35,25 +37,124 @@ class Database:
             self.insert_data("Categories", (None, category))
 
     
-    def use_db(self, db_name:str):
-        self.cursor.execute("USE " + db_name)
-
-
     def get_data(self, table: str, column_to_get:str = None, column_to_search:str = None, entry:str = None):
         if column_to_get is not None and column_to_search is None:
-            self.cursor.execute("SELECT " + column_to_get + " FROM " + table)
+            self.cursor.execute(
+                "SELECT " + column_to_get +
+                " FROM " + table + ";"
+            )
             response = self.cursor.fetchall()
         elif column_to_get is not None and column_to_get is not None:
-            self.cursor.execute("SELECT " + column_to_get + " FROM " + table + " WHERE " + column_to_search + "=" + entry + ";")
+            query_params = (entry,)
+            self.cursor.execute(
+                "SELECT " + column_to_get + 
+                " FROM " + table + 
+                " WHERE " + column_to_search + " = %s;", query_params
+            )
             response = self.cursor.fetchall()
         else:
-            self.cursor.execute("SELECT * FROM " + table + ";")
+            self.cursor.execute(
+                "SELECT * "
+                "FROM " + table + ";"
+            )
             response = self.cursor.fetchall()
             
         if len(response) > 0:
-            return response
+            if len(response) <= 1:
+                return response[0]
+            else:
+                return response
         else:
             return None            
+
+
+    def get_products_in_category(self, category: str):
+        self.cursor.execute(
+            "SELECT p.* "
+            "FROM Products AS p "
+            "INNER JOIN TJ_Products_Categories AS pc "
+                "ON p.id_product = pc.id_product "
+            "INNER JOIN Categories AS c "
+                "ON c.id_category = pc.id_category "
+            "WHERE c.category_name = '" + category + "';"
+        )
+        response = self.cursor.fetchall()
+        
+        if len(response) > 0:
+            return response
+        else:
+            return None
+
+
+    def get_categories_for_product(self, product_id: int):
+        categories_list = []
+        id = (product_id,)
+
+        self.cursor.execute(
+            "SELECT c.category_name "
+            "FROM Categories c "
+            "INNER JOIN TJ_Products_Categories pc "
+                "ON c.id_category = pc.id_category "
+            "INNER JOIN Products p "
+                "ON p.id_product = pc.id_product "
+            "WHERE p.id_product = %s;", id
+        )
+
+        response = self.cursor.fetchall()
+
+        if len(response) > 0:
+            for category in response:
+                categories_list.append(category[0])
+
+            return categories_list
+        else:
+            return None
+
+
+    def get_stores_for_product(self, product_id: int):
+        stores_list = []
+        id = (product_id,)
+
+        self.cursor.execute(
+            "SELECT s.shop_name "
+            "FROM Shops s "
+            "INNER JOIN TJ_Products_Shops ps "
+                "ON s.id_shop = ps.id_shop "
+            "INNER JOIN Products p "
+                "ON p.id_product = ps.id_product "
+            "WHERE p.id_product = %s;", id
+        )
+
+        response = self.cursor.fetchall()
+
+        if len(response) > 0:
+            for store in response:
+                stores_list.append(store[0])
+
+            return stores_list
+        else:
+            return None
+
+
+    def get_user_favorites_products(self, user_id: int):
+        id = (user_id,)
+
+        self.cursor.execute(
+            "SELECT p.* "
+            "FROM Products AS p "
+            "INNER JOIN TJ_Products_Users AS pu "
+                "ON p.id_product = pu.id_product "
+            "INNER JOIN Users AS u "
+                "ON u.id_user = pu.id_user "
+            "WHERE u.id_user = %s;", id
+        )
+
+        response = self.cursor.fetchall()
+
+        if len(response) > 0:
+            return response
+        else:
+            return None
 
 
     def insert_data(self, table: str, data: tuple):
@@ -116,6 +217,10 @@ class Database:
     
     def get_last_row_id(self):
         return self.cursor.lastrowid
+        
+
+    def use_db(self, db_name:str):
+        self.cursor.execute("USE " + db_name)
         
 
     def commit_db(self):

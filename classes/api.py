@@ -11,7 +11,6 @@ class Api:
         self.database = db
 
     def get_request(self, product_category: str):
-        print("requete sur category :", product_category)
         request = requests.get("https://fr-en.openfoodfacts.org/cgi/search.pl?search_terms=" + product_category + "&page_size=100&action=process&json=1", headers={ "items": self.user_agent }) 
         response = json.loads(request.text)
         
@@ -66,24 +65,23 @@ class Api:
 
 
             for store in product_shops:
-                shop_name = "'" + store + "'"
+                shop_name = store
                 store_id = self.database.get_data("Shops", "id_shop", "shop_name", shop_name)
 
                 if store_id is None:
                     self.database.insert_data("Shops", (None,store))
                     store_id = self.database.get_last_row_id()
                 else:
-                    store_id = store_id[0][0]
+                    store_id = store_id[0]
 
                 self.database.insert_data("TJ_Products_Shops", (product_id, store_id))
 
             
             for category in product_categories:
-                category_name = "'" + category + "'"
-                category_id = self.database.get_data("Categories", "id_category", "category_name", category_name)
+                category_id = self.database.get_data("Categories", "id_category", "category_name", category)
 
                 if category_id is not None:
-                    category_id = category_id[0][0]
+                    category_id = category_id[0]
                     self.database.insert_data("TJ_products_categories", (product_id, category_id))
                     
             i += 1
@@ -93,5 +91,4 @@ class Api:
             print("product_id :", product_id)
             print("")
 
-        print(i)
         
