@@ -10,11 +10,18 @@ def main():
   
   mydb = database.Database(config.db_config["host"], config.db_config["user"], config.db_config["password"])
 
+  available_db = mydb.available_databases()
+
+  if available_db is not None and "open_food_fact" in available_db:
+    mydb.use_db("open_food_fact")
+  else:
+    mydb.create_database()
+
   run_main = True
   while run_main:
     
     print("-------------------------------------------------------------------------------------")
-    user_selection = input("Menu \n\n1=Réinitialiser la bdd \n2=Nouvelle recherche \n3=Voir mes produits enregistrés \n4=Quitter le programme : ")
+    user_selection = input("Menu \n\n1 - Réinitialiser la bdd \n2 - Nouvelle recherche \n3 - Voir mes produits enregistrés \n4 - Quitter le programme : ")
 
     
 # ----- CHOICE 1 ------------------------------------------------------------------------------------------------------------------
@@ -190,8 +197,11 @@ def main():
 
 # ----- CHOICE 5 ------------------------------------------------------------------------------------------------------------------
 # ----- Test ----------------------------------------------------------------------------------------------------------------------    
-    # elif user_selection == "5":
-    #   pass       
+    elif user_selection == "5":
+
+      test = mydb.database_exist()
+
+      print(test)
       
 
     else:

@@ -25,12 +25,33 @@ class Database:
         self.database = mysql.connect(
             host=host,
             user=user,
-            passwd=passwd,
-            database=config.db_config["db_name"]
+            passwd=passwd
         )
         self.cursor = self.database.cursor()
 
 
+    def available_databases(self):
+        """
+            Get all available databases and return it as a list of string
+
+            Returns:
+                - list (str): list of all available databases
+                - None: if no databases available
+        """
+        database_available = []
+
+        self.cursor.execute("SHOW databases;")
+        response = self.cursor.fetchall()
+
+        for db in response:
+            database_available.append(db[0])
+
+        if len(database_available) > 0:
+            return database_available
+        else:
+            return None
+
+        
     def execute_script_from_file(self, file_path: str):
         """
             Execute SQL script specified in argument
@@ -307,3 +328,5 @@ class Database:
         '''
         self.database.commit()
 
+    def use_db(self, db_name: str):
+        self.cursor.execute("USE " + db_name + ";")
