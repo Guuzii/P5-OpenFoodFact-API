@@ -14,7 +14,9 @@ This programm has been developped for a python course.
 Clone project.
 Open Console and place yourself in the project directory.
 Run :
-    commande installation environnement (pipfile.lock)
+'''
+    pipenv install
+'''
 
 Configure access to your mysql database in the config.py file by changing host, user and password (lines 4, 5, 6)
 
@@ -22,7 +24,7 @@ Configure access to your mysql database in the config.py file by changing host, 
 
 Place yourself in the programm directory and run :
 
-'''console
+'''
     python main.py
 '''
 
