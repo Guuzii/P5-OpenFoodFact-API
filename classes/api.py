@@ -5,12 +5,31 @@ from classes.database import Database
 
 
 class Api:
+    """
+        API Object
+
+        Initialize an API object to do requests to open food fact api
+
+        Parameters:
+            - db (Database): the database used to store datas
+
+        Attributes:
+            - user_agent (str): the HTTP Header for requests
+            - database (Database): the database object to work with
+    """
 
     def __init__(self, db: Database):
         self.user_agent = "Pur Beurre - Projet étudiant - Python - Version 3.7.3"
         self.database = db
 
     def get_request(self, product_category: str):
+        """
+            GET request to open food fact api to get products in a category.
+            For each response, datas are inserted in the database
+
+            Parameters:
+                - product_category (str): the name of the category of products to get
+        """
         request = requests.get("https://fr-en.openfoodfacts.org/cgi/search.pl?search_terms=" + product_category + "&page_size=100&action=process&json=1", headers={ "items": self.user_agent }) 
         response = json.loads(request.text)
         

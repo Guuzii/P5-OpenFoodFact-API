@@ -6,21 +6,6 @@ from classes import database
 from classes import api
 
 
-def convert_grade_to_number(grade: str):
-  grade_formated = grade.lower()
-
-  if grade_formated == "a":
-    return 5
-  elif grade_formated == "b":
-    return 4
-  elif grade_formated == "c":
-    return 3
-  elif grade_formated == "d":
-    return 2
-  else:
-    return 1
-
-
 def main():
   
   mydb = database.Database(config.db_config["host"], config.db_config["user"], config.db_config["password"])
@@ -29,18 +14,22 @@ def main():
   while run_main:
     
     print("-------------------------------------------------------------------------------------")
-    user_selection = input("Menu \n\n1=réinitialiser la bdd \n2=Nouvelle recherche \n3=Voir mes produits favoris \n4=Quitter \n5=Test : ")
+    user_selection = input("Menu \n\n1=réinitialiser la bdd \n2=Nouvelle recherche \n3=Voir mes produits favoris \n4=Quitter : ")
+
     
-# ----- CHOIX 1 -------------------------------------------------------------------------------------------------------------------
+# ----- CHOICE 1 ------------------------------------------------------------------------------------------------------------------
+# ----- Database reset ------------------------------------------------------------------------------------------------------------
     if user_selection == "1":      
       mydb.create_database()
       mydb.commit_db()
       open_food_fact = api.Api(mydb)
 
-      for category in config.product_categories:
+      for category in config.product_categories_fr:
         open_food_fact.get_request(category)
 
-# ----- CHOIX 2 -------------------------------------------------------------------------------------------------------------------
+
+# ----- CHOICE 2 ------------------------------------------------------------------------------------------------------------------
+# ----- New search for product ----------------------------------------------------------------------------------------------------    
     elif user_selection == "2":
       categories = mydb.get_data("Categories")
       
@@ -52,7 +41,7 @@ def main():
         print("")
         
         for category in categories:
-          print(str(category[0]) + " - " + category[1])
+          print(str(category[0]) + " - " + config.product_categories_fr[category[1]])
         
         print("")
         selected_category = input("Sélectionnez une catégorie en saisissant son nombre associé : ")
@@ -61,18 +50,7 @@ def main():
           print("Saisie invalide \n")
           continue
 
-        if selected_category == "1":
-          category_name = categories[int(selected_category) - 1][1]
-        elif selected_category == "2":
-          category_name = categories[int(selected_category) - 1][1]
-        elif selected_category == "3":
-          category_name = categories[int(selected_category) - 1][1]
-        elif selected_category == "4":
-          category_name = categories[int(selected_category) - 1][1]
-        elif selected_category == "5":
-          category_name = categories[int(selected_category) - 1][1]
-        elif selected_category == "6":
-          category_name = categories[int(selected_category) - 1][1]
+        category_name = categories[int(selected_category) - 1][1]
 
         products = mydb.get_products_in_category(category_name)
         products_set = random.sample(set(products), config.product_to_display_for_selection)
@@ -119,7 +97,7 @@ def main():
               if product[3] == "a":
                 substitute_products.append(product)
             else:
-              if convert_grade_to_number(product[3]) > convert_grade_to_number(product_selection[3]):
+              if config.nutri_grade_score[product[3].lower()] > config.nutri_grade_score[product_selection[3].lower()]:
                 substitute_products.append(product)
 
           if len(substitute_products) >= 3:
@@ -176,7 +154,9 @@ def main():
 
         run_research = False
 
-# ----- CHOIX 3 -------------------------------------------------------------------------------------------------------------------
+
+# ----- CHOICE 3 ------------------------------------------------------------------------------------------------------------------
+# ----- Display products saved by user --------------------------------------------------------------------------------------------    
     elif user_selection == "3":
 
       favorites_products = mydb.get_user_favorites_products(1)
@@ -201,13 +181,18 @@ def main():
         print("")
         print("Vous n'avez pas encore de produits enregistré dans vos favoris")
 
-# ----- CHOIX 4 -------------------------------------------------------------------------------------------------------------------
+
+# ----- CHOICE 4 ------------------------------------------------------------------------------------------------------------------
+# ----- Programm stop -------------------------------------------------------------------------------------------------------------    
     elif user_selection == "4":
       run_main = False
 
-# ----- CHOIX 5 -------------------------------------------------------------------------------------------------------------------
-    elif user_selection == "5":
-      pass
+
+# ----- CHOICE 5 ------------------------------------------------------------------------------------------------------------------
+# ----- Test ----------------------------------------------------------------------------------------------------------------------    
+    # elif user_selection == "5":
+    #   pass       
+      
 
     else:
       print("Saisie invalide \n")

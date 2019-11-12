@@ -5,6 +5,21 @@ import mysql.connector as mysql
 
 
 class Database:
+    """
+        Database Object
+        
+        Initialize a Database object and connect to database specified in config.
+        Handle the database requests.
+
+        Parameters :
+            - host (str): the host for mysql connection
+            - user (str): the username for mysql connection
+            - passwd (str): the password for specified username
+        
+        Attributes:
+            - database: the database reference
+            - cursor: the cursor reference
+    """
 
     def __init__(self, host: str, user: str, passwd: str):
         self.database = mysql.connect(
@@ -17,6 +32,12 @@ class Database:
 
 
     def execute_script_from_file(self, file_path: str):
+        """
+            Execute SQL script specified in argument
+
+            Parameters :
+                - file_path (str): path to the sql script file
+        """
         file = open(file_path, 'r')
         sql_file = file.read()
         file.close()
@@ -32,12 +53,27 @@ class Database:
 
 
     def create_database(self):
+        """
+            Create database and insert categories in Categories table
+        """
         self.execute_script_from_file(config.path_to_creating_db_script)
         for category in config.product_categories:
             self.insert_data("Categories", (None, category))
 
     
     def get_data(self, table: str, column_to_get:str = None, column_to_search:str = None, entry:str = None):
+        '''
+            Get data in database depending on passed arguments
+
+            Parameters:
+                - table (str): the table to get data from
+                - column_to_get (str): the column to get in the table (if specified)
+                - column_to_search (str): the column on wich the WHERE condition is apply
+                - entry (str): the value to search in column_to_search
+
+            Returns:
+                - List (tuple): all datas for specified arguments
+        '''
         if column_to_get is not None and column_to_search is None:
             self.cursor.execute(
                 "SELECT " + column_to_get +
@@ -69,6 +105,15 @@ class Database:
 
 
     def get_products_in_category(self, category: str):
+        '''
+            Get products for specified category
+
+            Parameters:
+                - category (str): the name of the category of products to get
+
+            Returns:
+                - List (tuple): all products for specified category
+        '''
         self.cursor.execute(
             "SELECT p.* "
             "FROM Products AS p "
@@ -87,6 +132,15 @@ class Database:
 
 
     def get_categories_for_product(self, product_id: int):
+        '''
+            Get categories for specified product
+
+            Parameters:
+                - product_id (int): the id of the product to get categories from
+
+            Returns:
+                - List (str): all categories for specified product id
+        '''
         categories_list = []
         id = (product_id,)
 
@@ -112,6 +166,15 @@ class Database:
 
 
     def get_stores_for_product(self, product_id: int):
+        '''
+            Get stores for specified product
+
+            Parameters:
+                - product_id (int): the id of the product to get stores from
+
+            Returns:
+                - List (str): all stores for specified product id
+        '''
         stores_list = []
         id = (product_id,)
 
@@ -137,6 +200,15 @@ class Database:
 
 
     def get_user_favorites_products(self, user_id: int):
+        '''
+            Get products saved in database for specified user
+
+            Parameters:
+                - user_id (int): the id of the user to get products for
+
+            Returns:
+                - List (tuple): all products saved by user (none if no products saved yet)
+        '''
         id = (user_id,)
 
         self.cursor.execute(
@@ -156,8 +228,15 @@ class Database:
         else:
             return None
 
-
+    
     def insert_data(self, table: str, data: tuple):
+        '''
+            Save data passed in argument to specified table in datadase
+
+            Parameters:
+                - table (str): the name of the table in wich the data should be inserted
+                - data (tuple): the datas to insert. Refer to table description for datas order in tuple
+        '''
         insert_request = None
 
         if (table.lower() == "categories"):
@@ -216,21 +295,15 @@ class Database:
 
     
     def get_last_row_id(self):
+        '''
+            Return the id of the last row inserted at cursor position
+        '''
         return self.cursor.lastrowid
         
 
-    def use_db(self, db_name:str):
-        self.cursor.execute("USE " + db_name)
-        
-
     def commit_db(self):
+        '''
+            Commit changes to the database
+        '''
         self.database.commit()
-
-
-    def close_cursor(self):
-        self.cursor.close()
-
-
-    def close_db(self):
-        self.database.close()
 
