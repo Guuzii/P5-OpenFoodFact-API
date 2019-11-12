@@ -57,7 +57,7 @@ class Database:
             Create database and insert categories in Categories table
         """
         self.execute_script_from_file(config.path_to_creating_db_script)
-        for category in config.product_categories:
+        for category in config.product_categories_fr:
             self.insert_data("Categories", (None, category))
 
     

@@ -14,7 +14,7 @@ def main():
   while run_main:
     
     print("-------------------------------------------------------------------------------------")
-    user_selection = input("Menu \n\n1=réinitialiser la bdd \n2=Nouvelle recherche \n3=Voir mes produits favoris \n4=Quitter : ")
+    user_selection = input("Menu \n\n1=Réinitialiser la bdd \n2=Nouvelle recherche \n3=Voir mes produits enregistrés \n4=Quitter le programme : ")
 
     
 # ----- CHOICE 1 ------------------------------------------------------------------------------------------------------------------
