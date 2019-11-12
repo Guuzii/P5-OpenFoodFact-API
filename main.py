@@ -32,7 +32,7 @@ def main():
       open_food_fact = api.Api(mydb)
 
       for category in config.product_categories_fr:
-        open_food_fact.get_request(category)  
+        open_food_fact.get_request(category)    
 
 
 # ----- CHOICE 2 ------------------------------------------------------------------------------------------------------------------
