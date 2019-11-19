@@ -7,6 +7,7 @@ This programm has been developped for a python course.
 
     - Python 3.7
     - Pip
+    - Pipenv
     - Mysql
 
 ## Installation
