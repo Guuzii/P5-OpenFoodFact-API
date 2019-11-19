@@ -13,8 +13,7 @@ This programm has been developped for a python course.
 ## Installation
 
 Clone project.
-Open Console and place yourself in the project directory.
-Run :
+Open Console and place yourself in the project directory then execute this command :
 
     pipenv install    
 
@@ -22,7 +21,7 @@ Configure access to your mysql database in the config.py file by changing host, 
 
 ## Usage
 
-Place yourself in the programm directory and run :
+Place yourself in the programm directory, make sure your MySQL server is running then execute this command :
 
     python main.py
 
