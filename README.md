@@ -14,8 +14,11 @@ This programm has been developped for a python course.
 Clone project.
 Open Console and place yourself in the project directory.
 Run :
+
 '''
+
     pipenv install
+    
 '''
 
 Configure access to your mysql database in the config.py file by changing host, user and password (lines 4, 5, 6)
@@ -25,17 +28,21 @@ Configure access to your mysql database in the config.py file by changing host, 
 Place yourself in the programm directory and run :
 
 '''
+
     python main.py
+    
 '''
 
 Select an options in the different menus by typing the number corresponding to your choice:
 '''
+
     Menu
 
     1 - Réinitialiser la bdd
     2 - Nouvelle recherche
     3 - Voir mes produits enregistrés
     4 - Quitter le programme :
+    
 '''
 
 ## Modify categories
@@ -44,6 +51,7 @@ You can add or delete categories available in the menu and the database by modif
 Be sure to reset database once you have added or deleted some categories.
 
 '''
+
     product_categories_fr = {
         "plant-based-foods": "Fruits, Légumes, Plantes",
         "cereals-and-potatoes": "Féculents",
@@ -52,4 +60,5 @@ Be sure to reset database once you have added or deleted some categories.
         "desserts": "Desserts",
         "beverages": "Boissons"
     }
+    
 '''
