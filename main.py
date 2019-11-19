@@ -136,9 +136,9 @@ def main():
 
           run_user_save = True
           while run_user_save:
-            saving = input("Voulez vous ajouter à vos favoris un des produits proposés (o/n)? ")
+            saving = input("Voulez vous ajouter à vos favoris un des produits proposés? \n1 - oui \n2 - non : ")
 
-            if saving.lower() == "o":
+            if saving.lower() == "1":
               id_product_to_save = input("Saisissez l'id du produit que vous voulez ajouter à vos favoris : ")
 
               if int(id_product_to_save) not in substitute_products_id:
@@ -152,7 +152,7 @@ def main():
               print("")
 
               run_user_save = False
-            elif saving.lower() == "n":
+            elif saving.lower() == "2":
               run_user_save = False
             else:
               print("Saisie invalide \n")
